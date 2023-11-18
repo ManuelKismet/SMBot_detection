@@ -20,7 +20,7 @@ response = requests.get(url, headers=twitter_headers, params=querystring)
 #     "X-RapidAPI-Host": "check-username.p.rapidapi.com"}
 # check_user_response = requests.get(check_user_url, headers=check_user_headers)
 
-# print(response.json())
+# print(response.json())#
 # Get response and formate it from json to text
 # json_response_raw = response.json()
 # formatted_json_response_txt = json.dumps(json_response_raw, indent=4)
