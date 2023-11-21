@@ -9,7 +9,7 @@ twitter_headers = {
 response = requests.get(url, headers=twitter_headers, params=querystring)
 
 
-# Reformat the json response from Twitter to csv------------------------------------------------------------------
+# Reformat the json response from Twitter to #csv------------------------------------------------------------------
 # flat_data = {}
 def flatten(json_data, parent_key="", sep="."):
     flat_data = {}

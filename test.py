@@ -70,7 +70,7 @@ if __name__ == '__main__':
 # import dns.resolver
 # domain = 'br-icloud.com.br'
 # key = "uoiu26lyudmx4yrr73hnalpc34"
-#
+##
 # # Construct the DBL query domain
 # dbl_domain = f'{domain}.{key}.dbl.dq.spamhaus.net'
 #
