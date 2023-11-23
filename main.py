@@ -1,10 +1,8 @@
-import csv
-import json
 from time import sleep
 from urllib.parse import urlsplit
 import requests
 from pywebio import start_server, pin
-from pywebio.output import put_markdown, put_text, put_buttons, clear, toast, put_table, put_row, put_column, put_code
+from pywebio.output import put_markdown, put_text, put_buttons, toast, put_row, put_column, put_code
 from pywebio.pin import put_input, pin, put_textarea
 
 
@@ -138,8 +136,6 @@ def data_points(met):
             pass
         else:
             retweets.append(retweets_entry)
-    print([url_data, follower, following, username, account_create_date, post_date_time, verified, geolocation,
-           retweets])
     return [url_data, follower, following, username, account_create_date, post_date_time, verified, geolocation,
             retweets]
 
@@ -160,33 +156,25 @@ def url_spam_analysis(domain_to_analyse):
     return analysed_result.text
 
 
-def extract_domain(full_url):
-    split_url = urlsplit(full_url)
-    return split_url.netloc
-
-
-def get_domain():
-    url_list = []
-    flat_data = flatten(response.json())
-    for i in range(11):
-        url_data = flat_data.get(f"data.search_by_raw_query.search_timeline.timeline.instructions.0.entries.{i}.content"
-                                 f".itemContent.tweet_results.result.legacy.entities.urls.0.expanded_url")
+def get_domain(url_list):
+    domain_list = []
+    for i in range(len(url_list)):
+        url_data = url_list[i]
         if url_data is None:
             pass
         else:
-            url_list.append(extract_domain(url_data))
-    return url_list
+            split_url = urlsplit(url_data)
+            domain_list.append(split_url.netloc)
+    return domain_list
 
 
 def check_domain(domain_list):
-    print(domain_list)
     for domain in domain_list:
-        url_spam_analysis(domain)
-        sleep(65)
-
-
-def bot_detection():
-    check_domain(get_domain())
+        if domain is None:
+            pass
+        else:
+            url_spam_analysis(domain)
+            sleep(65)
 
 
 def application():
@@ -204,7 +192,10 @@ def application():
             pin.pin_name = ''  # Clear the input field
             json_response = api(entered_pin)
             flattened_data = flatten(json_response)
-            data_points(flattened_data)
+            (url_l, follower_l, following_l, username_l, account_create_date_l, post_date_time_l, verified_l,
+             geolocation_l, retweet_l) = data_points(flattened_data)
+            domain_l = get_domain(url_l)
+            check_domain(domain_l)
         else:
             toast('Enter ID for Query and Analysis 🔔')
 
