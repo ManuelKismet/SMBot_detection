@@ -3,56 +3,56 @@ from pywebio.output import put_markdown, put_text, put_buttons, clear, toast, pu
 from pywebio.pin import put_input, pin, put_textarea
 
 
-def application():
-    put_markdown('Twitter (X) Bot Account Detection').style('text-align:center;'
-                                                            'color:darkgrey;'
-                                                            'font-size:50px;'
-                                                            'font-weight: bold;'
-                                                            'text-decoration:underline')
-    put_input('pin_name', placeholder='inter x account id without @')
+# def application():
+#     put_markdown('Twitter (X) Bot Account Detection').style('text-align:center;'
+#                                                             'color:darkgrey;'
+#                                                             'font-size:50px;'
+#                                                             'font-weight: bold;'
+#                                                             'text-decoration:underline')
+#     put_input('pin_name', placeholder='inter x account id with @')
+#
+#     put_buttons(['Submit'], [lambda: submit_handler()])
+#     put_text('Results').style('text-align:center;'
+#                               'margin-top:50px;'
+#                               'color:white;'
+#                               'font-weight: bold;'
+#                               'font-size:40px;'
+#                               'background-color:#008CBA')
+#
+#     put_textarea(name='Bot', label=' Module Predict', placeholder='Waiting Prediction ...',
+#                  readonly=True).style('width:350px;'
+#                                       'display:inline-block;'
+#                                       'margin-top:30px')
+#     put_column([
+#         put_markdown('Stats'),
+#         put_row([
+#             put_code('xcatter2'), None,
+#             put_code('xcatter2'), None,
+#         ]),
+#         put_row([
+#             put_code('xcatter1'), None,
+#             put_code('xcatter1'), None,
+#         ]),
+#         put_row([
+#             put_code('xcatter'), None,
+#             put_code('xcatter'), None,
+#         ])
+#     ]).style('float:right;'
+#              'display:inline-block;'
+#              'margin-top:30px;'
+#              'width:400px')
+#
+#     def submit_handler():
+#         entered_pin = pin.pin_name
+#         if pin.pin_name:
+#             put_text(f'You entered: {entered_pin}')
+#             pin.pin_name = ''  # Clear the input field
+#         else:
+#             toast('Enter ID for Query and Analysis 🔔')
 
-    put_buttons(['Submit'], [lambda: submit_handler()])
-    put_text('Results').style('text-align:center;'
-                              'margin-top:50px;'
-                              'color:white;'
-                              'font-weight: bold;'
-                              'font-size:40px;'
-                              'background-color:#008CBA')
-
-    put_textarea(name='Bot', label='GPT Module Predict', placeholder='Waiting Prediction ...',
-                 readonly=True).style('width:350px;'
-                                      'display:inline-block;'
-                                      'margin-top:30px')
-    put_column([
-        put_markdown('Stats'),
-        put_row([
-            put_code('xcatter2'), None,
-            put_code('xcatter2'), None,
-        ]),
-        put_row([
-            put_code('xcatter1'), None,
-            put_code('xcatter1'), None,
-        ]),
-        put_row([
-            put_code('xcatter'), None,
-            put_code('xcatter'), None,
-        ])
-    ]).style('float:right;'
-             'display:inline-block;'
-             'margin-top:30px;'
-             'width:400px')
-
-    def submit_handler():
-        entered_pin = pin.pin_name
-        if pin.pin_name:
-            put_text(f'You entered: {entered_pin}')
-            pin.pin_name = ''  # Clear the input field
-        else:
-            toast('Enter ID for Query and Analysis 🔔')
-
-
-if __name__ == '__main__':
-    start_server(application, port=8088)
+#
+# if __name__ == '__main__':
+#     start_server(application, port=8088)
 # import requests
 #
 # key = '94113a6fb2fb039cfa75ad704c0db9b41e9b7ddb12f7ee680f7d6c706e1def0b'

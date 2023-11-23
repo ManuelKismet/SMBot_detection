@@ -3,14 +3,20 @@ import json
 from time import sleep
 from urllib.parse import urlsplit
 import requests
+from pywebio import start_server, pin
+from pywebio.output import put_markdown, put_text, put_buttons, clear, toast, put_table, put_row, put_column, put_code
+from pywebio.pin import put_input, pin, put_textarea
+
 
 # Twitter version 2 API to get account info endpoints
-url = "https://twitter-v24.p.rapidapi.com/search/"
-querystring = {"query": "KismetKismet", "limit": "10"}
-twitter_headers = {
-    "X-RapidAPI-Key": "cc05abe945msh7cc26d5561cbae6p115cd3jsn85c96893f8fd",
-    "X-RapidAPI-Host": "twitter-v24.p.rapidapi.com"}
-response = requests.get(url, headers=twitter_headers, params=querystring)
+def api(account_id):
+    url = "https://twitter-v24.p.rapidapi.com/search/"
+    querystring = {"query": account_id, "limit": "5"}
+    twitter_headers = {
+        "X-RapidAPI-Key": "cc05abe945msh7cc26d5561cbae6p115cd3jsn85c96893f8fd",
+        "X-RapidAPI-Host": "twitter-v24.p.rapidapi.com"}
+    response = requests.get(url, headers=twitter_headers, params=querystring)
+    return response.json()
 
 
 # API to check account name across other SM platforms----------------------------------------------------------
@@ -48,6 +54,95 @@ def flatten(json_data, parent_key="", sep="."):
 
 
 # flatten(response.json())
+
+def data_points(met):
+    url_data, follower, following, username, account_create_date = [], [], [], [], []
+    post_date_time, verified, geolocation, retweets = [], [], [], []
+    for i in range(11):
+        media_url_entry = met.get(
+            f"data.search_by_raw_query.search_timeline.timeline.instructions.0.entries.{i}.content.itemContent."
+            f"tweet_results.result.legacy.entities.media.0.expanded_url")
+        if media_url_entry is None:
+            pass
+        else:
+            url_data.append(media_url_entry)
+
+        url_entry = met.get(
+            f"data.search_by_raw_query.search_timeline.timeline.instructions.0.entries.{i}.content.itemContent."
+            f"tweet_results.result.legacy.entities.urls.0.expanded_url")
+        if url_entry is None:
+            pass
+        else:
+            url_data.append(url_entry)
+
+        follower_entry = met.get(
+            f"data.search_by_raw_query.search_timeline.timeline.instructions.0.entries.{i}.content.itemContent."
+            f"tweet_results.result.core.user_results.result.legacy.followers_count")
+        if follower_entry is None:
+            pass
+        else:
+            follower.append(follower_entry)
+
+        following_entry = met.get(
+            f"data.search_by_raw_query.search_timeline.timeline.instructions.0.entries.{i}.content.itemContent."
+            f"tweet_results.result.core.user_results.result.legacy.friends_count")
+        if following_entry is None:
+            pass
+        else:
+            following.append(following_entry)
+
+        username_entry = met.get(
+            f"data.search_by_raw_query.search_timeline.timeline.instructions.0.entries.{i}.content.itemContent."
+            f"tweet_results.result.core.user_results.result.legacy.name")
+        if username_entry is None:
+            pass
+        else:
+            username.append(username_entry)
+
+        account_create_date_entry = met.get(
+            f"data.search_by_raw_query.search_timeline.timeline.instructions.0.entries.{i}.content.itemContent."
+            f"tweet_results.result.core.user_results.result.legacy.created_at")
+        if account_create_date_entry is None:
+            pass
+        else:
+            account_create_date.append(account_create_date_entry)
+
+        post_date_time_entry = met.get(
+            f"data.search_by_raw_query.search_timeline.timeline.instructions.0.entries.{i}.content.itemContent."
+            f"tweet_results.result.legacy.created_at")
+        if post_date_time_entry is None:
+            pass
+        else:
+            post_date_time.append(post_date_time_entry)
+
+        verified_entry = met.get(
+            f"data.search_by_raw_query.search_timeline.timeline.instructions.0.entries.{i}.content.itemContent."
+            f"tweet_results.result.core.user_results.result.legacy.verified")
+        if verified_entry is None:
+            pass
+        else:
+            verified.append(verified_entry)
+
+        geolocation_entry = met.get(
+            f"data.search_by_raw_query.search_timeline.timeline.instructions.0.entries.{i}.content.itemContent."
+            f"tweet_results.result.core.user_results.result.legacy.location")
+        if geolocation_entry is None:
+            pass
+        else:
+            geolocation.append(geolocation_entry)
+
+        retweets_entry = met.get(
+            f"data.search_by_raw_query.search_timeline.timeline.instructions.0.entries.{i}.content.itemContent."
+            f"tweet_results.result.legacy.retweet_count")
+        if retweets_entry is None:
+            pass
+        else:
+            retweets.append(retweets_entry)
+    print([url_data, follower, following, username, account_create_date, post_date_time, verified, geolocation,
+           retweets])
+    return [url_data, follower, following, username, account_create_date, post_date_time, verified, geolocation,
+            retweets]
+
 
 # virusTotal url spam check-------------------------------------------------------------------
 def url_spam_analysis(domain_to_analyse):
@@ -94,8 +189,59 @@ def bot_detection():
     check_domain(get_domain())
 
 
+def application():
+    put_markdown('Twitter (X) Bot Account Detection').style('text-align:center;'
+                                                            'color:darkgrey;'
+                                                            'font-size:50px;'
+                                                            'font-weight: bold;'
+                                                            'text-decoration:underline')
+    put_input('pin_name', placeholder='inter x account id with @')
+
+    def submit_handler():
+        entered_pin = pin.pin_name
+        if pin.pin_name:
+            put_text(f'You entered: {entered_pin}')
+            pin.pin_name = ''  # Clear the input field
+            json_response = api(entered_pin)
+            flattened_data = flatten(json_response)
+            data_points(flattened_data)
+        else:
+            toast('Enter ID for Query and Analysis 🔔')
+
+    put_buttons(['Submit'], [lambda: submit_handler()])
+    put_text('Results').style('text-align:center;'
+                              'margin-top:50px;'
+                              'color:white;'
+                              'font-weight: bold;'
+                              'font-size:40px;'
+                              'background-color:#008CBA')
+
+    put_textarea(name='Bot', label=' Module Predict', placeholder='Waiting Prediction ...',
+                 readonly=True).style('width:350px;'
+                                      'display:inline-block;'
+                                      'margin-top:30px')
+    put_column([
+        put_markdown('Stats'),
+        put_row([
+            put_code('xcatter2'), None,
+            put_code('xcatter2'), None,
+        ]),
+        put_row([
+            put_code('xcatter1'), None,
+            put_code('xcatter1'), None,
+        ]),
+        put_row([
+            put_code('xcatter'), None,
+            put_code('xcatter'), None,
+        ])
+    ]).style('float:right;'
+             'display:inline-block;'
+             'margin-top:30px;'
+             'width:400px')
+
+
 if __name__ == "__main__":
-    bot_detection()
+    start_server(application, port=8088)
 
 # flattened_csv = "flattened_csv.csv"
 # # text_file = "text_file.txt"
