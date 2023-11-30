@@ -56,86 +56,68 @@ def flatten(json_data, parent_key="", sep="."):
 def data_points(met):
     url_data, follower, following, username, account_create_date = [], [], [], [], []
     post_date_time, verified, geolocation, retweets = [], [], [], []
+    entry_first_string = "data.search_by_raw_query.search_timeline.timeline.instructions.0.entries."
+    entry_mid_string = ".content.itemContent.tweet_results.result."
+    entries = [
+        "legacy.entities.media.0.expanded_url",
+        "legacy.entities.urls.0.expanded_url",
+        "core.user_results.result.legacy.followers_count",
+        "core.user_results.result.legacy.friends_count",
+        "core.user_results.result.legacy.name",
+        "core.user_results.result.legacy.created_at",
+        "legacy.created_at",
+        "core.user_results.result.legacy.verified",
+        "core.user_results.result.legacy.location",
+        "legacy.retweet_count"
+    ]
     for i in range(11):
-        media_url_entry = met.get(
-            f"data.search_by_raw_query.search_timeline.timeline.instructions.0.entries.{i}.content.itemContent."
-            f"tweet_results.result.legacy.entities.media.0.expanded_url")
-        if media_url_entry is None:
-            pass
-        else:
-            url_data.append(media_url_entry)
-
-        url_entry = met.get(
-            f"data.search_by_raw_query.search_timeline.timeline.instructions.0.entries.{i}.content.itemContent."
-            f"tweet_results.result.legacy.entities.urls.0.expanded_url")
-        if url_entry is None:
-            pass
-        else:
-            url_data.append(url_entry)
-
-        follower_entry = met.get(
-            f"data.search_by_raw_query.search_timeline.timeline.instructions.0.entries.{i}.content.itemContent."
-            f"tweet_results.result.core.user_results.result.legacy.followers_count")
-        if follower_entry is None:
-            pass
-        else:
-            follower.append(follower_entry)
-
-        following_entry = met.get(
-            f"data.search_by_raw_query.search_timeline.timeline.instructions.0.entries.{i}.content.itemContent."
-            f"tweet_results.result.core.user_results.result.legacy.friends_count")
-        if following_entry is None:
-            pass
-        else:
-            following.append(following_entry)
-
-        username_entry = met.get(
-            f"data.search_by_raw_query.search_timeline.timeline.instructions.0.entries.{i}.content.itemContent."
-            f"tweet_results.result.core.user_results.result.legacy.name")
-        if username_entry is None:
-            pass
-        else:
-            username.append(username_entry)
-
-        account_create_date_entry = met.get(
-            f"data.search_by_raw_query.search_timeline.timeline.instructions.0.entries.{i}.content.itemContent."
-            f"tweet_results.result.core.user_results.result.legacy.created_at")
-        if account_create_date_entry is None:
-            pass
-        else:
-            account_create_date.append(account_create_date_entry)
-
-        post_date_time_entry = met.get(
-            f"data.search_by_raw_query.search_timeline.timeline.instructions.0.entries.{i}.content.itemContent."
-            f"tweet_results.result.legacy.created_at")
-        if post_date_time_entry is None:
-            pass
-        else:
-            post_date_time.append(post_date_time_entry)
-
-        verified_entry = met.get(
-            f"data.search_by_raw_query.search_timeline.timeline.instructions.0.entries.{i}.content.itemContent."
-            f"tweet_results.result.core.user_results.result.legacy.verified")
-        if verified_entry is None:
-            pass
-        else:
-            verified.append(verified_entry)
-
-        geolocation_entry = met.get(
-            f"data.search_by_raw_query.search_timeline.timeline.instructions.0.entries.{i}.content.itemContent."
-            f"tweet_results.result.core.user_results.result.legacy.location")
-        if geolocation_entry is None:
-            pass
-        else:
-            geolocation.append(geolocation_entry)
-
-        retweets_entry = met.get(
-            f"data.search_by_raw_query.search_timeline.timeline.instructions.0.entries.{i}.content.itemContent."
-            f"tweet_results.result.legacy.retweet_count")
-        if retweets_entry is None:
-            pass
-        else:
-            retweets.append(retweets_entry)
+        for entry in entries:
+            entry_data = met.get(f"{entry_first_string}{i}{entry_mid_string}{entry}")
+            if entry == entries[0] or entry == entries[1]:
+                if entry_data is None:
+                    pass
+                else:
+                    url_data.append(entry_data)
+            if entry == entries[2]:
+                if entry_data is None:
+                    pass
+                else:
+                    follower.append(entry_data)
+            if entry == entries[3]:
+                if entry_data is None:
+                    pass
+                else:
+                    following.append(entry_data)
+            if entry == entries[4]:
+                if entry_data is None:
+                    pass
+                else:
+                    username.append(entry_data)
+            if entry == entries[5]:
+                if entry_data is None:
+                    pass
+                else:
+                    account_create_date.append(entry_data)
+            if entry == entries[6]:
+                if entry_data is None:
+                    pass
+                else:
+                    post_date_time.append(entry_data)
+            if entry == entries[7]:
+                if entry_data is None:
+                    pass
+                else:
+                    verified.append(entry_data)
+            if entry == entries[8]:
+                if entry_data is None:
+                    pass
+                else:
+                    geolocation.append(entry_data)
+            if entry == entries[9]:
+                if entry_data is None:
+                    pass
+                else:
+                    retweets.append(entry_data)
     return [url_data, follower, following, username, account_create_date, post_date_time, verified, geolocation,
             retweets]
 
@@ -152,8 +134,9 @@ def url_spam_analysis(domain_to_analyse):
     get_real_id = analysis_id_value.split('-')
     real_id = get_real_id[1].strip()
     analysed_result = requests.get(f'{api_url}/{real_id}', headers=headers)
-    print(analysed_result.text)
-    return analysed_result.text
+    harmless = (analysed_result.json()["data"]["attributes"]["last_analysis_stats"]["harmless"])
+    malicious = (analysed_result.json()["data"]["attributes"]["last_analysis_stats"]["malicious"])
+    return "harmless" if harmless > malicious else "malicious"
 
 
 def get_domain(url_list):
@@ -169,12 +152,14 @@ def get_domain(url_list):
 
 
 def check_domain(domain_list):
+    malicious_statuses = []
     for domain in domain_list:
         if domain is None:
             pass
         else:
-            url_spam_analysis(domain)
-            sleep(65)
+            malicious_statuses.append(url_spam_analysis(domain))
+            sleep(62)
+    return malicious_statuses
 
 
 def application():
@@ -184,6 +169,8 @@ def application():
                                                             'font-weight: bold;'
                                                             'text-decoration:underline')
     put_input('pin_name', placeholder='inter x account id with @')
+
+    mal_stats = ""
 
     def submit_handler():
         entered_pin = pin.pin_name
@@ -195,7 +182,11 @@ def application():
             (url_l, follower_l, following_l, username_l, account_create_date_l, post_date_time_l, verified_l,
              geolocation_l, retweet_l) = data_points(flattened_data)
             domain_l = get_domain(url_l)
-            check_domain(domain_l)
+            mal_status = check_domain(domain_l)
+            if 'malicious' in mal_status:
+                mal_stats = "malicious"
+            else:
+                mal_stats = "harmless"
         else:
             toast('Enter ID for Query and Analysis 🔔')
 
@@ -207,10 +198,26 @@ def application():
                               'font-size:40px;'
                               'background-color:#008CBA')
 
-    put_textarea(name='Bot', label=' Module Predict', placeholder='Waiting Prediction ...',
-                 readonly=True).style('width:350px;'
-                                      'display:inline-block;'
-                                      'margin-top:30px')
+    put_text("###Predicting###...").style('width:max-content;'
+                                          'display:block;'
+                                          'margin-top:50px;'
+                                          'color:black;'
+                                          'font-weight: bold;'
+                                          'font-size:30px;'
+                                          'background-color:darkgrey;'
+                                          )
+
+    put_text(mal_stats).style('width:280px;'
+                              'height:200px;'
+                              'display:inline-block;'
+                              'margin-top:50px;'
+                              'color:black;'
+                              'font-weight: bold;'
+                              'font-size:30px;'
+                              'background-color:darkgrey;'
+                              'border:2px solid black;'
+                              )
+
     put_column([
         put_markdown('Stats'),
         put_row([
@@ -226,9 +233,9 @@ def application():
             put_code('xcatter'), None,
         ])
     ]).style('float:right;'
-             'display:inline-block;'
              'margin-top:30px;'
-             'width:400px')
+             'width:300px;'
+             'display:inline-block;')
 
 
 if __name__ == "__main__":
