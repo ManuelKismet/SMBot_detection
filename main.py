@@ -159,7 +159,7 @@ def check_domain(domain_list):
         else:
             malicious_statuses.append(url_spam_analysis(domain))
             sleep(62)
-    return malicious_statuses
+    return "malicious" if 'malicious' in malicious_statuses else "harmless"
 
 
 def application():
@@ -169,8 +169,6 @@ def application():
                                                             'font-weight: bold;'
                                                             'text-decoration:underline')
     put_input('pin_name', placeholder='inter x account id with @')
-
-    mal_stats = ""
 
     def submit_handler():
         entered_pin = pin.pin_name
@@ -182,11 +180,7 @@ def application():
             (url_l, follower_l, following_l, username_l, account_create_date_l, post_date_time_l, verified_l,
              geolocation_l, retweet_l) = data_points(flattened_data)
             domain_l = get_domain(url_l)
-            mal_status = check_domain(domain_l)
-            if 'malicious' in mal_status:
-                mal_stats = "malicious"
-            else:
-                mal_stats = "harmless"
+            mal_stats = check_domain(domain_l)
         else:
             toast('Enter ID for Query and Analysis 🔔')
 
