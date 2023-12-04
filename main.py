@@ -159,36 +159,55 @@ def check_domain(domain_list):
         else:
             malicious_statuses.append(url_spam_analysis(domain))
             sleep(62)
-    print(malicious_statuses)
     return "malicious" if 'malicious' in malicious_statuses else "harmless"
 
 
 def submit_handler():
+    f2f_rat = ''
     entered_pin = pin.pin_name
     if pin.pin_name:
         put_text(f'You entered: {entered_pin}')
         pin.pin_name = ''  # Clear the input field
         json_response = api(entered_pin)
-        # print(json_response)
         flattened_data = flatten(json_response)
-        # print(flattened_data)
         (url_l, follower_l, following_l, username_l, account_create_date_l, post_date_time_l, verified_l,
          geolocation_l, retweet_l) = data_points(flattened_data)
-        # print(url_l)
         domain_l = get_domain(url_l)
-        print(domain_l)
+        f2f_l = [a / b for a, b in zip(follower_l, following_l)]
+        f2f_ratio = sum(f2f_l) / len(f2f_l)
+        if 0.1 <= f2f_ratio <= 1:
+            f2f_rat = 'Normal'
+        else:
+            f2f_rat = 'ABNORMAL'
         mal_stat = check_domain(domain_l)
-        print(mal_stat)
-        put_text(mal_stat).style('width:280px;'
-                                 'height:200px;'
-                                 'display:inline-block;'
-                                 'margin-top:50px;'
-                                 'color:black;'
-                                 'font-weight: bold;'
-                                 'font-size:30px;'
-                                 'background-color:darkgrey;'
-                                 'border:2px solid black;'
-                                 'text-align: center;')
+        put_text('Bot or Not').style('width:280px;'
+                                     'height:200px;'
+                                     'display:inline-block;'
+                                     'margin-top:50px;'
+                                     'color:black;'
+                                     'font-weight: bold;'
+                                     'font-size:30px;'
+                                     'background-color:darkgrey;'
+                                     'border:2px solid black;'
+                                     'text-align: center;')
+        put_column([
+            put_markdown('Stats').style('font-weight: bold;'),
+            put_row([
+                put_code('Possible Mal Link'), None,
+                put_code(mal_stat), None,
+            ]),
+            put_row([
+                put_code('F2F Ratio'), None,
+                put_code(f2f_rat), None,
+            ]),
+            put_row([
+                put_code('Post Frequency'), None,
+                put_code('ABNORMAL'), None,
+            ])
+        ]).style('float:right;'
+                 'margin-top:30px;'
+                 'width:350px;'
+                 'display:inline-block;')
     else:
         toast('Enter ID for Query and Analysis 🔔')
 
@@ -229,24 +248,24 @@ def application():
     #                  'border:2px solid black;'
     #                  'text-align: center;')
 
-    put_column([
-        put_markdown('Stats').style('font-weight: bold;'),
-        put_row([
-            put_code('Possible Mal Link'), None,
-            put_code('YES'), None,
-        ]),
-        put_row([
-            put_code('F2F Ratio'), None,
-            put_code('ABNORMAL'), None,
-        ]),
-        put_row([
-            put_code('Post Frequency'), None,
-            put_code('ABNORMAL'), None,
-        ])
-    ]).style('float:right;'
-             'margin-top:30px;'
-             'width:350px;'
-             'display:inline-block;')
+    # put_column([
+    #     put_markdown('Stats').style('font-weight: bold;'),
+    #     put_row([
+    #         put_code('Possible Mal Link'), None,
+    #         put_code('YES'), None,
+    #     ]),
+    #     put_row([
+    #         put_code('F2F Ratio'), None,
+    #         put_code('ABNORMAL'), None,
+    #     ]),
+    #     put_row([
+    #         put_code('Post Frequency'), None,
+    #         put_code('ABNORMAL'), None,
+    #     ])
+    # ]).style('float:right;'
+    #          'margin-top:30px;'
+    #          'width:350px;'
+    #          'display:inline-block;')
 
 
 if __name__ == "__main__":
