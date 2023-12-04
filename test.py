@@ -1,6 +1,28 @@
-from pywebio import start_server, pin
-from pywebio.output import put_markdown, put_text, put_buttons, clear, toast, put_table, put_row, put_column, put_code
-from pywebio.pin import put_input, pin, put_textarea
+# import csv
+# import random
+#
+# # Generate random numbers
+# random_numbers = [random.randint(1, 10000) for _ in range(10000)]
+#
+# # Shuffle the list to randomize the order
+# random.shuffle(random_numbers)
+#
+# # Split the list into two columns
+# column1 = random_numbers[:5000]
+# column2 = random_numbers[5000:]
+#
+# # Combine the two columns into rows
+# rows = list(zip(column1, column2))
+#
+# # Write to CSV file
+# with open('random_numbers.csv', 'w', newline='') as csvfile:
+#     csvwriter = csv.writer(csvfile)
+#     csvwriter.writerow(['Column1', 'Column2'])  # Header row
+#     csvwriter.writerows(rows)
+
+# from pywebio import start_server, pin
+# from pywebio.output import put_markdown, put_text, put_buttons, clear, toast, put_table, put_row, put_column, put_code
+# from pywebio.pin import put_input, pin, put_textarea
 
 
 # def application():
