@@ -172,6 +172,7 @@ def submit_handler():
         flattened_data = flatten(json_response)
         (url_l, follower_l, following_l, username_l, account_create_date_l, post_date_time_l, verified_l,
          geolocation_l, retweet_l) = data_points(flattened_data)
+        print(account_create_date_l, '\n', post_date_time_l, '\n', url_l, '\n', geolocation_l)
         domain_l = get_domain(url_l)
         f2f_l = [a / b for a, b in zip(follower_l, following_l)]
         f2f_ratio = sum(f2f_l) / len(f2f_l)
