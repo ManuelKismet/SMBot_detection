@@ -1,4 +1,5 @@
 from time import sleep
+from datetime import datetime
 from urllib.parse import urlsplit
 import requests
 from pywebio import start_server, pin
@@ -162,8 +163,41 @@ def check_domain(domain_list):
     return "malicious" if 'malicious' in malicious_statuses else "harmless"
 
 
+def post_frequency(pdt):
+    if len(pdt) < 2:
+        return 'Normal'
+    else:
+        date_time_objects = [datetime.strptime(dt, '%a %b %d %H:%M:%S %z %Y') for dt in pdt]
+        sorted_date_time_objects = sorted(date_time_objects)
+        time_diffs = [sorted_date_time_objects[i + 1] - sorted_date_time_objects[i] for i in
+                      range(len(sorted_date_time_objects) - 1)]
+        posting_frequency_seconds = sum(diff.total_seconds() for diff in time_diffs) / len(time_diffs)
+
+        return 'Normal' if posting_frequency_seconds > 60 else 'Abnormal'
+
+
+def prediction(ms, fr, pf):
+    if ms == 'malicious' and fr == 'Normal' and pf == 'Normal':
+        return 'malicious Bot Account'
+    elif ms == 'malicious' and fr == 'Abnormal' and pf == 'Normal':
+        return 'malicious Bot Account'
+    elif ms == 'malicious' and fr == 'Abnormal' and pf == 'Abnormal':
+        return 'malicious Bot Account'
+    elif ms == 'malicious' and fr == 'Normal' and pf == 'Abnormal':
+        return 'malicious Bot Account'
+    elif ms == 'harmless' and fr == 'Normal' and pf == 'Normal':
+        return 'Possible Real Account'
+    elif ms == 'harmless' and fr == 'Abnormal' and pf == 'Normal':
+        return 'Less Likely Bot Account'
+    elif ms == 'harmless' and fr == 'Abnormal' and pf == 'Abnormal':
+        return 'Likely Bot Account'
+    elif ms == 'harmless' and fr == 'Normal' and pf == 'Abnormal':
+        return 'Possible Real Account'
+    else:
+        return "Can't determine account status"
+
+
 def submit_handler():
-    f2f_rat = ''
     entered_pin = pin.pin_name
     if pin.pin_name:
         put_text(f'You entered: {entered_pin}')
@@ -172,29 +206,32 @@ def submit_handler():
         flattened_data = flatten(json_response)
         (url_l, follower_l, following_l, username_l, account_create_date_l, post_date_time_l, verified_l,
          geolocation_l, retweet_l) = data_points(flattened_data)
-        print(account_create_date_l, '\n', post_date_time_l, '\n', url_l, '\n', geolocation_l)
+        post_freq = post_frequency(post_date_time_l)
         domain_l = get_domain(url_l)
+        print(follower_l, following_l, username_l, geolocation_l)
         f2f_l = [a / b for a, b in zip(follower_l, following_l)]
+        print(f2f_l)
         f2f_ratio = sum(f2f_l) / len(f2f_l)
         if 0.1 <= f2f_ratio <= 1:
             f2f_rat = 'Normal'
         else:
-            f2f_rat = 'ABNORMAL'
+            f2f_rat = 'Abnormal'
         mal_stat = check_domain(domain_l)
-        put_text('Bot or Not').style('width:280px;'
-                                     'height:200px;'
-                                     'display:inline-block;'
-                                     'margin-top:50px;'
-                                     'color:black;'
-                                     'font-weight: bold;'
-                                     'font-size:30px;'
-                                     'background-color:darkgrey;'
-                                     'border:2px solid black;'
-                                     'text-align: center;')
+        bot_or_not = prediction(mal_stat, f2f_rat, post_freq)
+        put_text(bot_or_not).style('width:280px;'
+                                   'height:200px;'
+                                   'display:inline-block;'
+                                   'margin-top:50px;'
+                                   'color:black;'
+                                   'font-weight: bold;'
+                                   'font-size:30px;'
+                                   'background-color:darkgrey;'
+                                   'border:2px solid black;'
+                                   'text-align: center;')
         put_column([
             put_markdown('Stats').style('font-weight: bold;'),
             put_row([
-                put_code('Possible Mal Link'), None,
+                put_code('Malicious Link(s)'), None,
                 put_code(mal_stat), None,
             ]),
             put_row([
@@ -203,7 +240,7 @@ def submit_handler():
             ]),
             put_row([
                 put_code('Post Frequency'), None,
-                put_code('ABNORMAL'), None,
+                put_code(post_freq), None,
             ])
         ]).style('float:right;'
                  'margin-top:30px;'
@@ -238,56 +275,6 @@ def application():
                                           'background-color:darkgrey;'
                                           )
 
-    # put_text().style('width:280px;'
-    #                  'height:200px;'
-    #                  'display:inline-block;'
-    #                  'margin-top:50px;'
-    #                  'color:black;'
-    #                  'font-weight: bold;'
-    #                  'font-size:30px;'
-    #                  'background-color:darkgrey;'
-    #                  'border:2px solid black;'
-    #                  'text-align: center;')
-
-    # put_column([
-    #     put_markdown('Stats').style('font-weight: bold;'),
-    #     put_row([
-    #         put_code('Possible Mal Link'), None,
-    #         put_code('YES'), None,
-    #     ]),
-    #     put_row([
-    #         put_code('F2F Ratio'), None,
-    #         put_code('ABNORMAL'), None,
-    #     ]),
-    #     put_row([
-    #         put_code('Post Frequency'), None,
-    #         put_code('ABNORMAL'), None,
-    #     ])
-    # ]).style('float:right;'
-    #          'margin-top:30px;'
-    #          'width:350px;'
-    #          'display:inline-block;')
-
 
 if __name__ == "__main__":
     start_server(application, port=8088)
-
-# flattened_csv = "flattened_csv.csv"
-# # text_file = "text_file.txt"
-# header_columns = list(flat_data.keys())
-# row_values = list(flat_data.values())
-# #
-# # Write the formatted data to CSV file-----------------------------------------------------------------------
-# with open(flattened_csv, "w", encoding="utf-8") as file:
-#     writer = csv.writer(file)
-#     writer.writerow(header_columns)
-#     writer.writerow(row_values)
-
-# Write the formatted data to text file-----------------------------------------------------------------------
-# with open(text_file, "w") as f:
-#     f.write(formatted_json_response_txt)
-
-
-# print(check_user_response.json())
-# with open(text_file, "w") as f:
-#     f.write(json.dumps(response.json(), indent=4))

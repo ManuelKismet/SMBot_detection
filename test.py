@@ -1,32 +1,33 @@
-from datetime import datetime
-
-# Your list of post_date_time strings
-post_date_times = [
-    'Thu Feb 05 06:00:21 +0000 2015',
-    'Sat Mar 21 03:06:06 +0000 2015',
-    'Thu Feb 26 08:18:44 +0000 2015',
-    'Thu Feb 26 08:16:04 +0000 2015',
-    'Thu Feb 26 08:28:11 +0000 2015'
-]
-
-# Convert strings to datetime objects
-date_time_objects = [datetime.strptime(dt, '%a %b %d %H:%M:%S %z %Y') for dt in post_date_times]
-print(date_time_objects)
-# Sort datetime objects
-sorted_date_time_objects = sorted(date_time_objects)
-print(sorted_date_time_objects)
-# Calculate time differences
-time_diffs = [sorted_date_time_objects[i+1] - sorted_date_time_objects[i] for i in range(len(sorted_date_time_objects)-1)]
-print(time_diffs)
-
-# Calculate posting frequency in seconds
-posting_frequency_seconds = sum(diff.total_seconds() for diff in time_diffs) / len(time_diffs)
-print(posting_frequency_seconds)
-# Convert posting frequency to a more human-readable format
-posting_frequency_hours = posting_frequency_seconds / 3600
-print(posting_frequency_hours)
-
-print(f"Average posting frequency: {posting_frequency_hours:.2f} hours")
+# from datetime import datetime
+#
+# # Your list of post_date_time strings
+# post_date_times = [
+#     'Thu Feb 05 06:00:21 +0000 2015',
+#     'Sat Mar 21 03:06:06 +0000 2015',
+#     'Thu Feb 26 08:18:44 +0000 2015',
+#     'Thu Feb 26 08:16:04 +0000 2015',
+#     'Thu Feb 26 08:28:11 +0000 2015'
+# ]
+#
+# # Convert strings to datetime objects
+# date_time_objects = [datetime.strptime(dt, '%a %b %d %H:%M:%S %z %Y') for dt in post_date_times]
+# print(date_time_objects)
+# # Sort datetime objects
+# sorted_date_time_objects = sorted(date_time_objects)
+# print(sorted_date_time_objects)
+# # Calculate time differences
+# time_diffs = [sorted_date_time_objects[i+1] - sorted_date_time_objects[i] for i in range(len(sorted_date_time_objects)-1)]
+# print(time_diffs)
+#
+# # Calculate posting frequency in seconds
+# posting_frequency_seconds = sum(diff.total_seconds() for diff in time_diffs) / len(time_diffs)
+# print(posting_frequency_seconds)
+# print(posting_frequency_seconds/60)
+# # Convert posting frequency to a more human-readable format
+# posting_frequency_hours = posting_frequency_seconds / 3600
+# print(posting_frequency_hours/24)
+#
+# print(f"Average posting frequency: {posting_frequency_hours:.2f} hours")
 
 
 # import csv
