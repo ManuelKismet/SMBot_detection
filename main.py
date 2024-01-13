@@ -210,12 +210,16 @@ def submit_handler():
         domain_l = get_domain(url_l)
         print(follower_l, following_l, username_l, geolocation_l)
         f2f_l = [a / b for a, b in zip(follower_l, following_l)]
+        f2f_rat = 'Unknown'
         print(f2f_l)
-        f2f_ratio = sum(f2f_l) / len(f2f_l)
-        if 0.1 <= f2f_ratio <= 1:
-            f2f_rat = 'Normal'
+        if len(f2f_l) == 0:
+            pass
         else:
-            f2f_rat = 'Abnormal'
+            f2f_ratio = sum(f2f_l) / len(f2f_l)
+            if 0.1 <= f2f_ratio <= 1:
+                f2f_rat = 'Normal'
+            else:
+                f2f_rat = 'Abnormal'
         mal_stat = check_domain(domain_l)
         bot_or_not = prediction(mal_stat, f2f_rat, post_freq)
         put_text(bot_or_not).style('width:280px;'
@@ -266,7 +270,7 @@ def application():
                               'font-size:40px;'
                               'background-color:#008CBA')
 
-    put_text("###Predicting###...").style('width:max-content;'
+    put_text("###Prediction###...").style('width:max-content;'
                                           'display:block;'
                                           'margin-top:50px;'
                                           'color:black;'

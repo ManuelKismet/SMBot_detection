@@ -1,3 +1,10 @@
+f2f_l = []
+if len(f2f_l) is None:
+    pass
+else:
+    print(f2f_l)
+
+
 # from datetime import datetime
 #
 # # Your list of post_date_time strings
