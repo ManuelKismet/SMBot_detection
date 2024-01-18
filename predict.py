@@ -9,6 +9,7 @@ from sklearn.preprocessing import LabelEncoder
 # Load and preprocess data
 data = pd.read_csv('bot_detection_data.csv')
 X = data.drop(['BotLabel', 'Hashtags'], axis=1)
+print(X.info())
 y = data['BotLabel']
 encoder = LabelEncoder()
 X['Username'] = encoder.fit_transform(data['Username'])

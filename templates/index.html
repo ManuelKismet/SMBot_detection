@@ -6,8 +6,45 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>SMBotDetection</title>
+    <link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
-<div><p> web app interface</p></div>
+{% for message in get_flashed_messages() %}
+    <p class="flash-message">
+        {{ message }}
+    </p>
+{% endfor %}
+<h1> Twitter (X) Bot Account Detection</h1>
+<form action="/submit" method="POST">
+    <label>
+        <input name="input" type="text" placeholder="enter X account ID with @">
+    </label>
+    <button type="submit" >Submit</button>
+</form>
+<h3> Predicting ... </h3>
+<label for=""><textarea disabled name="" id="" cols="30" rows="10">the display area</textarea></label>
+
+<div>
+    <section id="PResults">
+
+    </section>
+    <section id="stats">
+        <h5>Stats</h5>
+        <table>
+            <tr>
+                <td>some text 1</td>
+                <td>some text 2</td>
+            </tr>
+            <tr>
+                <td>some text 3</td>
+                <td>some text 4</td>
+            </tr>
+            <tr>
+                <td>some text 5</td>
+                <td>some text 6</td>
+            </tr>
+        </table>
+    </section>
+</div>
 </body>
 </html>

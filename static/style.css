@@ -1,0 +1,85 @@
+/* Reset some default styles */
+body, h1, p {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 20px;
+}
+.flash-message{
+    text-align: center;
+    width: fit-content;
+    margin: auto;
+    background-color: orangered;
+}
+
+h1 {
+    color: #0077cc;
+    text-align: center;
+}
+
+label {
+    display: block;
+    margin: 10px 0;
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    box-sizing: border-box;
+}
+
+button {
+    padding: 10px;
+    background-color: #0077cc;
+    color: #fff;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #005580;
+}
+
+/* Results Section */
+#PResults {
+    margin-top: 20px;
+}
+
+/* Stats Section */
+#stats {
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+/* Responsive Design */
+@media only screen and (max-width: 600px) {
+    body {
+        margin: 10px;
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+
+    button {
+        width: 100%;
+    }
+
+    /* Additional responsive styles as needed */
+}
