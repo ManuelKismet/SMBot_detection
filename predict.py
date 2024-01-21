@@ -23,27 +23,27 @@ y = data['BotLabel']
 # X['Location'] = encoder.fit_transform(data['Location'])
 # X['CreatedAt'] = encoder.fit_transform(data['CreatedAt'])
 
+# encoder = LabelEncoder()
+# X = data[['Username', 'Location', 'TweetLength', 'NumHashtags', 'HourCreated']]
+# X = X.apply(encoder.fit_transform)
+
 categorical_features = ['Username', 'Location', 'CreatedAt']  # encoding one-hot
 ohe = OneHotEncoder(sparse=True)
 sparse_matrices = [ohe.fit_transform(data[col].values.reshape(-1, 1)) for col in categorical_features]
 X_encoded = hstack(sparse_matrices)
-tfidf = TfidfVectorizer()  # Vectorize text using TF-IDF
+tfidf = TfidfVectorizer(sparse=True)  # Vectorize text using TF-IDF
 X_tweet = tfidf.fit_transform(data['Tweet'])
-X = np.hstack((X, X_tweet.toarray()))  # Combine text features with other features
 X = csr_matrix(hstack([X_encoded, X_tweet]))  # Combine encoded features and numerical features (if any)
+# X = np.hstack((X, X_tweet.toarray()))  # Combine text features with other features
 
 # Feature engineering
 data['TweetLength'] = data['Tweet'].str.len()  # Create tweet length feature
 data['NumHashtags'] = data['Hashtags'].str.split().str.len()  # Count hashtags
 data['HourCreated'] = pd.to_datetime(data['CreatedAt']).dt.hour  # Extract hour
 
-# Encode categorical features
-encoder = LabelEncoder()
-X = data[['Username', 'Location', 'TweetLength', 'NumHashtags', 'HourCreated']]
-X = X.apply(encoder.fit_transform)
-
 # Split data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
 # Naive Bayes
 bayes = GaussianNB().fit(X_train, y_train)
 bayes_predict = bayes.predict(X_test)
