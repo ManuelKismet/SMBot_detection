@@ -5,16 +5,21 @@ import requests
 from pywebio import start_server, pin
 from pywebio.output import put_markdown, put_text, put_buttons, toast, put_row, put_column, put_code
 from pywebio.pin import put_input, pin
+import os
+
+apikey = os.environ.get("API_Key")
+print(apikey)
 
 
 # Twitter version 2 API to get account info endpoints
 def api(account_id):
-    url = "https://twitter-v24.p.rapidapi.com/search/"
-    querystring = {"query": account_id, "limit": "5"}
+    url = "https://twitter-v24.p.rapidapi.com/search"
+    querystring = {"query": account_id, "limit": "10"}
     twitter_headers = {
-        "X-RapidAPI-Key": "cc05abe945msh7cc26d5561cbae6p115cd3jsn85c96893f8fd",
+        "X-RapidAPI-Key": apikey,
         "X-RapidAPI-Host": "twitter-v24.p.rapidapi.com"}
     response = requests.get(url, headers=twitter_headers, params=querystring)
+    print(response.json())
     return response.json()
 
 
@@ -204,6 +209,7 @@ def submit_handler():
         pin.pin_name = ''  # Clear the input field
         json_response = api(entered_pin)
         flattened_data = flatten(json_response)
+        print(flattened_data)
         (url_l, follower_l, following_l, username_l, account_create_date_l, post_date_time_l, verified_l,
          geolocation_l, retweet_l) = data_points(flattened_data)
         post_freq = post_frequency(post_date_time_l)
@@ -281,4 +287,5 @@ def application():
 
 
 if __name__ == "__main__":
-    start_server(application, port=8088)
+    # start_server(application, port=8088)
+    api('Xcatter')
