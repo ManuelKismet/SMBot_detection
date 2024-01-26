@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier, VotingClassifier, GradientBoostingClassifier
+from sklearn.ensemble import VotingClassifier, GradientBoostingClassifier, RandomForestClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
@@ -70,13 +70,13 @@ X, y = preprocess_data(data)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Specify the hyperparameter grid for Logistic Regression
-param_grid_lr = {'C': [0.001, 0.01, 0.1, 1, 10, 100], 'max_iter': [500, 1000, 1500]}
-logistic_model = LogisticRegression()
-grid_search_lr = GridSearchCV(logistic_model, param_grid_lr, cv=5)
-grid_search_lr.fit(X_train, y_train)
-best_logistic_model = grid_search_lr.best_estimator_
-print("Best hyperparameters for Logistic Regression:", grid_search_lr.best_params_)
+# # Specify the hyperparameter grid for Logistic Regression
+# param_grid_lr = {'C': [0.001, 0.01, 0.1, 1, 10, 100], 'max_iter': [500, 1000, 1500]}
+# logistic_model = LogisticRegression()
+# grid_search_lr = GridSearchCV(logistic_model, param_grid_lr, cv=5)
+# grid_search_lr.fit(X_train, y_train)
+# best_logistic_model = grid_search_lr.best_estimator_
+# print("Best hyperparameters for Logistic Regression:", grid_search_lr.best_params_)
 
 # # Specify the hyperparameter grid for Random Forest
 # param_grid_rf = {
@@ -91,24 +91,26 @@ print("Best hyperparameters for Logistic Regression:", grid_search_lr.best_param
 # best_rf_model = grid_search_rf.best_estimator_
 # print("Best hyperparameters for Random Forest:", grid_search_rf.best_params_)
 
-# Define the hyperparameter grid for GradientBoostingClassifie
-param_grid_gb = {
-    'n_estimators': [50, 100, 200],
-    'learning_rate': [0.01, 0.1, 0.2],
-    'max_depth': [3, 5, 7]
-}
-gb_classifier = GradientBoostingClassifier(random_state=42)
-grid_search_gb = GridSearchCV(gb_classifier, param_grid_gb, cv=5, scoring='accuracy', n_jobs=-1)
-grid_search_gb.fit(X_train, y_train)
-best_gb_model = grid_search_gb.best_estimator_
-print("Best hyperparameters for GradientBoostingClassifier:", grid_search_gb.best_params_)
+# # Define the hyperparameter grid for GradientBoostingClassifie
+# param_grid_gb = {
+#     'n_estimators': [50, 100, 200],
+#     'learning_rate': [0.01, 0.1, 0.2],
+#     'max_depth': [3, 5, 7]
+# }
+# gb_classifier = GradientBoostingClassifier(random_state=42)
+# grid_search_gb = GridSearchCV(gb_classifier, param_grid_gb, cv=5, scoring='accuracy', n_jobs=-1)
+# grid_search_gb.fit(X_train, y_train)
+# best_gb_model = grid_search_gb.best_estimator_
+# print("Best hyperparameters for GradientBoostingClassifier:", grid_search_gb.best_params_)
 
 voting_classifier = VotingClassifier(estimators=[
-    ('logistic', best_logistic_model),
-    # ('random_forest', best_rf_model),
-    ('gb_classifier', best_gb_model)
+    ('logistic', LogisticRegression(max_iter=500)),
+    ('random_forest', RandomForestClassifier()),
+    # ('gb_classifier', best_gb_model)
 ])
 voting_classifier.fit(X_train, y_train)
+
+
 voting_predict = voting_classifier.predict(X_test)
 scores = cross_val_score(voting_classifier, X_train, y_train, cv=5)
 print("Cross-validation accuracy:", np.mean(scores))
