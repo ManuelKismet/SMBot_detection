@@ -91,7 +91,7 @@ print("Best hyperparameters for Logistic Regression:", grid_search_lr.best_param
 # best_rf_model = grid_search_rf.best_estimator_
 # print("Best hyperparameters for Random Forest:", grid_search_rf.best_params_)
 
-# Define the hyperparameter grid for GradientBoostingClassifier
+# Define the hyperparameter grid for GradientBoostingClassifie
 param_grid_gb = {
     'n_estimators': [50, 100, 200],
     'learning_rate': [0.01, 0.1, 0.2],
