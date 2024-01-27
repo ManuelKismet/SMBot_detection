@@ -10,7 +10,7 @@ import os
 apikey = os.environ.get("API_Key")
 
 
-# Twitter version 2 API to get account info endpoints
+# Twitter version 2 API to get account info endpoint
 def api(account_id):
     url = "https://twitter-v24.p.rapidapi.com/search/"
     querystring = {"query": account_id, "limit": "2"}
