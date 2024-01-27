@@ -10,14 +10,16 @@ import os
 apikey = os.environ.get("API_Key")
 
 
-# Twitter version 2 API to get account info endpoint
+# Twitter version 2 API to get account info endpoints
 def api(account_id):
+    print(account_id)
     url = "https://twitter-v24.p.rapidapi.com/search/"
     querystring = {"query": account_id, "limit": "2"}
     twitter_headers = {
         "X-RapidAPI-Key": apikey,
         "X-RapidAPI-Host": "twitter-v24.p.rapidapi.com"}
     response = requests.get(url, headers=twitter_headers, params=querystring)
+    print(response.json())
     return response.json()
 
 
@@ -283,6 +285,6 @@ def application():
                                           )
 
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
     # start_server(application, port=8088)
-    # api('@XcatterBits')
+    api('XcatterBits')
