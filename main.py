@@ -8,18 +8,16 @@ from pywebio.pin import put_input, pin
 import os
 
 apikey = os.environ.get("API_Key")
-print(apikey)
 
 
 # Twitter version 2 API to get account info endpoints
 def api(account_id):
-    url = "https://twitter-v24.p.rapidapi.com/search"
-    querystring = {"query": account_id, "limit": "10"}
+    url = "https://twitter-v24.p.rapidapi.com/search/"
+    querystring = {"query": account_id, "limit": "2"}
     twitter_headers = {
         "X-RapidAPI-Key": apikey,
         "X-RapidAPI-Host": "twitter-v24.p.rapidapi.com"}
     response = requests.get(url, headers=twitter_headers, params=querystring)
-    print(response.json())
     return response.json()
 
 
@@ -209,15 +207,14 @@ def submit_handler():
         pin.pin_name = ''  # Clear the input field
         json_response = api(entered_pin)
         flattened_data = flatten(json_response)
-        print(flattened_data)
         (url_l, follower_l, following_l, username_l, account_create_date_l, post_date_time_l, verified_l,
          geolocation_l, retweet_l) = data_points(flattened_data)
         post_freq = post_frequency(post_date_time_l)
         domain_l = get_domain(url_l)
-        print(follower_l, following_l, username_l, geolocation_l)
+        # print(follower_l, following_l, username_l, geolocation_l)
         f2f_l = [a / b for a, b in zip(follower_l, following_l)]
         f2f_rat = 'Unknown'
-        print(f2f_l)
+        # print(f2f_l)
         if len(f2f_l) == 0:
             pass
         else:
@@ -286,6 +283,6 @@ def application():
                                           )
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
     # start_server(application, port=8088)
-    api('Xcatter')
+    # api('@XcatterBits')

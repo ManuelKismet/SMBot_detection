@@ -22,7 +22,11 @@
     <button type="submit" >Submit</button>
 </form>
 <h3> Predicting ... </h3>
-<label for=""><textarea disabled name="" id="" cols="30" rows="10">the display area</textarea></label>
+<label for="">
+    <textarea disabled name="" id="" cols="30" rows="10">
+        {% bot_or_not %}
+    </textarea>
+</label>
 
 <div>
     <section id="PResults">
