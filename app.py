@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, jsonify, flash, redirect, url_for
+from flask import Flask, render_template, request, jsonify, flash, redirect, url_for, session
 from main import *
 
 app = Flask(__name__)
@@ -8,7 +8,12 @@ app.secret_key = os.urandom(24)
 
 @app.route('/', methods=['GET'])
 def index():
-    return render_template("index.html")
+    mal_stat = session.get('mal_stat')
+    bot_or_not = session.get('bot_or_not')
+    post_freq = session.get('post_freq')
+    f2f_rat = session.get('f2f_rat')
+    return render_template('index.html', mal_stat=mal_stat, bot_or_not=bot_or_not,
+                           post_freq=post_freq, f2f_rat=f2f_rat)
 
 
 @app.route('/submit', methods=['POST'])
@@ -17,7 +22,7 @@ def submit():
     if request.method == "POST":
         input_id = request.form['input']
         print(input_id)
-        if input_id == "" or input_id[0] != "@":
+        if input_id == "": # or input_id[0] != "@":
             flash('Enter Valid ID 🔔', 'info')
             return redirect(url_for('index'))
         else:
@@ -52,12 +57,17 @@ def process_data(_id):
     print(mal_stat)
     bot_or_not = prediction(mal_stat, f2f_rat, post_freq)
     print(bot_or_not)
-    return jsonify({
-        'result': bot_or_not,
-        'mal_stat': mal_stat,
-        'f2f_rat': f2f_rat,
-        'post_freq': post_freq
-    })
+    # return jsonify({
+    #     'result': bot_or_not,
+    #     'mal_stat': mal_stat,
+    #     'f2f_rat': f2f_rat,
+    #     'post_freq': post_freq
+    # })
+    session['mal_stat'] = mal_stat
+    session['bot_or_not'] = bot_or_not
+    session['post_freq'] = post_freq
+    session['f2f_rat'] = f2f_rat
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':

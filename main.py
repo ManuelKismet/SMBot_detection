@@ -285,6 +285,6 @@ def application():
                                           )
 
 
-if __name__ == "__main__":
-    # start_server(application, port=8088)
-    api('XcatterBits')
+# if __name__ == "__main__":
+# start_server(application, port=8088)
+    # api('Xcatter')
