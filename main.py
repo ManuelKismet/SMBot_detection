@@ -26,7 +26,7 @@ def api(account_id):
 # API to check account name across other SM platforms----------------------------------------------------------
 # check_user_url = "https://check-username.p.rapidapi.com/check/check/KismetKismet"
 # check_user_headers = {
-#     "X-RapidAPI-Key": "cc05abe945msh7cc26d5561cbae6p115cd3jsn85c96893f8fd",
+#     "X-RapidAPI-Key": "xxxxxx",
 #     "X-RapidAPI-Host": "check-username.p.rapidapi.com"}
 # check_user_response = requests.get(check_user_url, headers=check_user_headers)
 
@@ -130,7 +130,7 @@ def data_points(met):
 
 # virusTotal url spam check-------------------------------------------------------------------
 def url_spam_analysis(domain_to_analyse):
-    api_key = '94113a6fb2fb039cfa75ad704c0db9b41e9b7ddb12f7ee680f7d6c706e1def0b'
+    api_key = 'xxxxxxxx'
     api_url = 'https://www.virustotal.com/api/v3/urls'
     # domain_to_analyse = 'test.com'
     form_url = {'url': domain_to_analyse}
